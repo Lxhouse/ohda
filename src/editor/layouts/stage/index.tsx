@@ -2,6 +2,7 @@ import React from 'react';
 import { useDrop } from 'react-dnd';
 import { Button, Space } from 'antd';
 import { ItemType } from '@/editor/item-type';
+import { useComponents } from '@/editor/stores/components';
 
 interface IComponent {
   id: string;
@@ -16,7 +17,7 @@ const ComponentMap: Record<string, React.ElementType> = {
 };
 
 const Stage: React.FC = () => {
-  const components: IComponent[] = [];
+  const { components } = useComponents();
   /** 渲染组件 */
   const renderComponents = (components: IComponent[]): React.ReactNode => {
     return components.map((component) => {
@@ -47,7 +48,7 @@ const Stage: React.FC = () => {
       ref={drag}
       className={[
         'p-[24px] h-[100%]',
-        canDrop ? ` border-2 border-solid border-gray-500` : '',
+        canDrop ? `border-2 border-solid border-gray-500` : '',
       ].join(' ')}
     >
       {renderComponents(components)}

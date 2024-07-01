@@ -1,8 +1,10 @@
-export interface Component {
+import { create } from 'zustand';
+
+export interface IComponent {
   /**
    * 组件唯一标识
    */
-  id: number;
+  id: string;
   /**
    * 组件名称
    */
@@ -14,17 +16,22 @@ export interface Component {
   /**
    * 子组件
    */
-  children?: Component[];
-  /**
-   * 父组件id
-   */
-  parentId?: number;
-  /**
-   * 组件描述
-   */
-  desc?: string;
-  hidden?: {
-    type: 'static' | 'variable';
-    value: any;
-  };
+  children?: IComponent[];
 }
+
+interface State {
+  components: IComponent[];
+}
+
+interface Action {
+  addComponent: (component: IComponent) => void;
+}
+
+export const useComponents = create<State & Action>((set) => ({
+  components: [],
+  addComponent: (component) => {
+    set((state) => {
+      return { components: [...state.components, component] };
+    });
+  },
+}));

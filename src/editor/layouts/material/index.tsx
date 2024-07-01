@@ -1,9 +1,15 @@
 import ComponentItem from '@/editor/common/component-item';
 import { ItemType } from '@/editor/item-type';
+import { useComponents } from '@/editor/stores/components';
 import React from 'react';
 const Material: React.FC = () => {
+  const { addComponent } = useComponents();
   const onDragEnd = (dropResult: any) => {
-    console.log(dropResult);
+    addComponent({
+      id: String(new Date().getTime()),
+      name: dropResult.name,
+      props: dropResult.props,
+    });
   };
 
   return (
