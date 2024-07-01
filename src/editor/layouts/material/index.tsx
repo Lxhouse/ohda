@@ -5,11 +5,14 @@ import React from 'react';
 const Material: React.FC = () => {
   const { addComponent } = useComponents();
   const onDragEnd = (dropResult: any) => {
-    addComponent({
-      id: String(new Date().getTime()),
-      name: dropResult.name,
-      props: dropResult.props,
-    });
+    addComponent(
+      {
+        id: String(new Date().getTime()),
+        name: dropResult.name,
+        props: dropResult.props,
+      },
+      dropResult.id
+    );
   };
 
   return (

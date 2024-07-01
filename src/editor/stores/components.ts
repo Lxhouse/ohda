@@ -1,36 +1,30 @@
 import { create } from 'zustand';
-
-export interface IComponent {
-  /**
-   * 组件唯一标识
-   */
-  id: string;
-  /**
-   * 组件名称
-   */
-  name: string;
-  /**
-   * 组件属性
-   */
-  props: any;
-  /**
-   * 子组件
-   */
-  children?: IComponent[];
-}
-
+import { IComponent } from '@/editor/utils/types';
+import { getComponentById } from '@/editor/utils';
 interface State {
   components: IComponent[];
 }
 
 interface Action {
-  addComponent: (component: IComponent) => void;
+  addComponent: (component: IComponent, parentId?: string) => void;
 }
 
 export const useComponents = create<State & Action>((set) => ({
   components: [],
-  addComponent: (component) => {
+  addComponent: (component, parentId) => {
     set((state) => {
+      if (parentId) {
+        const parentComponent = getComponentById(parentId, state.components);
+        if (parentComponent) {
+          if (parentComponent.children) {
+            parentComponent.children.push(component);
+          } else {
+            parentComponent.children = [component];
+          }
+        }
+        return { components: [...state.components] };
+      }
+
       return { components: [...state.components, component] };
     });
   },

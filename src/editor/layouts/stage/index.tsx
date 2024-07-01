@@ -1,15 +1,10 @@
 import React from 'react';
 import { useDrop } from 'react-dnd';
-import { Button, Space } from 'antd';
+import { Button } from 'antd';
+import Space from '@/editor/components/space';
 import { ItemType } from '@/editor/item-type';
 import { useComponents } from '@/editor/stores/components';
-
-interface IComponent {
-  id: string;
-  name: string;
-  props: any;
-  children?: IComponent[];
-}
+import { IComponent } from '@/editor/utils/types';
 
 const ComponentMap: Record<string, React.ElementType> = {
   Button,
