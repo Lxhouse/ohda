@@ -3,14 +3,19 @@ import { IComponent } from '@/editor/utils/types';
 import { getComponentById } from '@/editor/utils';
 interface State {
   components: IComponent[];
+  curComponentId?: string;
 }
 
 interface Action {
+  /**添加组件 */
   addComponent: (component: IComponent, parentId?: string) => void;
+  /** 设置当前的组件 */
+  setCurComponentId: (componentId: string) => void;
 }
 
 export const useComponents = create<State & Action>((set) => ({
   components: [],
+  curComponentId: void 0,
   addComponent: (component, parentId) => {
     set((state) => {
       if (parentId) {
@@ -27,5 +32,8 @@ export const useComponents = create<State & Action>((set) => ({
 
       return { components: [...state.components, component] };
     });
+  },
+  setCurComponentId: (componentId) => {
+    set((state) => ({ ...state, curComponentId: componentId }));
   },
 }));
