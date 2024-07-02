@@ -24,6 +24,7 @@ const Stage: React.FC = () => {
         if (ele.getAttribute) {
           if (ele.getAttribute('data-component-id')) {
             const componentId = ele.getAttribute('data-component-id');
+
             setCurComponentId(componentId);
           }
         }
@@ -51,7 +52,6 @@ const Stage: React.FC = () => {
     return components.map((component) => {
       const ComponentType = ComponentMap[component.name];
       if (!ComponentType) return;
-
       return React.createElement(
         ComponentType,
         {

@@ -38,9 +38,19 @@ const Setting: React.FC = () => {
     useComponents();
 
   useEffect(() => {
-    // 初始化表单
-    form.setFieldsValue(curComponent?.props);
-  }, [curComponent]);
+    if (!curComponentId || !curComponent) return;
+    // Get the current values of the form fields
+    const data = form.getFieldsValue(true);
+
+    // Initialize a new object with null values for each key in `data`
+    const newData = Object.keys(data).reduce((prev: any, key) => {
+      prev[key] = null;
+      return prev;
+    }, {});
+
+    // Set initial values for the form fields
+    form.setFieldsValue({ ...newData, ...curComponent?.props });
+  }, [curComponent, form]);
 
   // 监听表单值变化，更新组件属性
   function valueChange(changeValues: any) {
@@ -64,15 +74,18 @@ const Setting: React.FC = () => {
         form={form}
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 14 }}
+        initialValues={curComponent.props}
         onValuesChange={valueChange}
       >
-        {(componentSettingMap[curComponent.name] || []).map((setting) => {
-          return (
-            <Form.Item name={setting.name} label={setting.label}>
-              {renderFormElement(setting)}
-            </Form.Item>
-          );
-        })}
+        {componentSettingMap[curComponent.name]?.map((setting) => (
+          <Form.Item
+            key={setting.name}
+            name={setting.name}
+            label={setting.label}
+          >
+            {renderFormElement(setting)}
+          </Form.Item>
+        ))}
       </Form>
     </div>
   );

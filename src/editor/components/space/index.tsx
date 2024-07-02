@@ -9,7 +9,9 @@ interface IProps {
   id: string;
 }
 
-const Space: React.FC<IProps> = ({ id, children }) => {
+const Space: React.FC<IProps> = (props) => {
+  console.log(123321, { props });
+  const { id, children } = props || {};
   const [{ canDrop }, drop] = useDrop(() => ({
     accept: [ItemType.Space, ItemType.Button],
     drop: (_, monitor) => {
@@ -32,6 +34,7 @@ const Space: React.FC<IProps> = ({ id, children }) => {
         'p-[16px]',
         canDrop ? `border border-solid border-gray-500` : '',
       ].join(' ')}
+      {...props}
     >
       {!children?.length ? '暂无内容' : children}
     </AntdSpace>
