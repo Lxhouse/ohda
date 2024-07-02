@@ -5,6 +5,7 @@ interface State {
   components: IComponent[];
   curComponentId?: string;
   curComponent: IComponent | null;
+  mode: 'edit' | 'preview';
 }
 
 interface Action {
@@ -23,9 +24,11 @@ interface Action {
     componentId: string,
     props: Record<string, any>
   ) => void;
+  setMode: (mode: State['mode']) => void;
 }
 
 export const useComponents = create<State & Action>((set) => ({
+  mode: 'edit',
   components: [],
   curComponent: null,
   addComponent: (component, parentId) => {
@@ -64,5 +67,8 @@ export const useComponents = create<State & Action>((set) => ({
       }
       return { components: [...state.components] };
     });
+  },
+  setMode: (mode) => {
+    set({ mode });
   },
 }));

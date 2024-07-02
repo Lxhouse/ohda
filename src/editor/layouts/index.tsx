@@ -10,7 +10,7 @@ import Setting from './setting';
 const Layout: React.FC = () => {
   return (
     <div className="h-[100vh] flex flex-col">
-      <div className="h-[50px] flex items-center ">
+      <div className="h-[50px] flex items-center shadow-md">
         <Header />
       </div>
       <Allotment>

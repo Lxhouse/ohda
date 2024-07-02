@@ -10,7 +10,6 @@ interface IProps {
 }
 
 const Space: React.FC<IProps> = (props) => {
-  console.log(123321, { props });
   const { id, children } = props || {};
   const [{ canDrop }, drop] = useDrop(() => ({
     accept: [ItemType.Space, ItemType.Button],
