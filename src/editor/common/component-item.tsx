@@ -35,7 +35,7 @@ const ComponentItem: React.FC<IComponentItemProps> = ({
     <div
       ref={drag}
       className={[
-        'border-dashed border-[1px] border-[gray] bg-white cursor-move py-[8px] px-[20px] rounded-lg',
+        'border-dashed border border-[gray] bg-white cursor-move py-[8px] px-[20px] rounded-lg',
         isDragging ? 'opacity-40' : 'opacity-100',
       ].join(' ')}
     >

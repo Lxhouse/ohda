@@ -30,7 +30,7 @@ const Space: React.FC<IProps> = ({ id, children }) => {
       ref={drop}
       className={[
         'p-[16px]',
-        canDrop ? `border-2 border-solid border-gray-500` : '',
+        canDrop ? `border border-solid border-gray-500` : '',
       ].join(' ')}
     >
       {!children?.length ? '暂无内容' : children}

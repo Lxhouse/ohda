@@ -81,7 +81,7 @@ const Stage: React.FC = () => {
       ref={drag}
       className={[
         'p-[24px] h-[100%] stage',
-        canDrop ? `border-2 border-solid border-gray-500` : '',
+        canDrop ? `border border-solid border-gray-500` : '',
       ].join(' ')}
     >
       {renderComponents(components)}
