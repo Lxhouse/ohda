@@ -1,5 +1,6 @@
+import React from 'react';
 import { IComponent } from '@/editor/utils/types';
-
+import { ComponentMap } from '@/editor/components/componentsConfig';
 /**
  * 根据 id 递归查找组件
  *
@@ -22,3 +23,21 @@ export function getComponentById(
   }
   return null;
 }
+
+/** 渲染组件 */
+export const renderComponents = (components: IComponent[]): React.ReactNode => {
+  return components.map((component) => {
+    const ComponentType = ComponentMap[component.name];
+    if (!ComponentType) return;
+    return React.createElement(
+      ComponentType,
+      {
+        key: component.id,
+        id: component.id,
+        ...component.props,
+        'data-component-id': component.id,
+      },
+      component.props.children || renderComponents(component.children || [])
+    );
+  });
+};
