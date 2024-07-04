@@ -1,9 +1,10 @@
 import { Button, Space } from 'antd';
+import { useState } from 'react';
 import { useComponents } from '@/editor/stores/components';
-
+import ComponentTree from './component-tree';
 const Header: React.FC = () => {
   const { mode, setMode, setCurComponentId } = useComponents();
-
+  const [componentTreeVisible, setComponentTreeVisible] = useState(false);
   return (
     <div className="h-[100%] w-[100%]">
       <div className="flex justify-between px-[24px] items-center   h-[100%]">
@@ -25,6 +26,14 @@ const Header: React.FC = () => {
         </div>
         <div className="flex flex-1 justify-end px-[24px]">
           <Space className="flex-1 flex justify-end">
+            <Button
+              onClick={() => {
+                setComponentTreeVisible(true);
+              }}
+              type="primary"
+            >
+              查看大纲
+            </Button>
             {mode === 'edit' && (
               <Button
                 onClick={() => {
@@ -49,6 +58,12 @@ const Header: React.FC = () => {
           </Space>
         </div>
       </div>
+      <ComponentTree
+        open={componentTreeVisible}
+        onCancel={() => {
+          setComponentTreeVisible(false);
+        }}
+      />
     </div>
   );
 };
