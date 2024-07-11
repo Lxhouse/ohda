@@ -1,92 +1,25 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
+import { Segmented } from 'antd';
+import type { SegmentedValue } from 'antd/es/segmented';
 import { useComponents } from '@/editor/stores/components';
-import { ItemType } from '@/editor/item-type';
-import { Form, Select, Input } from 'antd';
-const componentSettingMap = {
-  [ItemType.Button]: [
-    {
-      name: 'type',
-      label: '按钮类型',
-      type: 'select',
-      options: [
-        { label: '主按钮', value: 'primary' },
-        { label: '次按钮', value: 'default' },
-      ],
-    },
-    {
-      name: 'children',
-      label: '文本',
-      type: 'input',
-    },
-  ],
-  [ItemType.Space]: [
-    {
-      name: 'size',
-      label: '间距大小',
-      type: 'select',
-      options: [
-        { label: '大', value: 'large' },
-        { label: '中', value: 'middle' },
-        { label: '小', value: 'small' },
-      ],
-    },
-  ],
-};
+import ComponentAttr from './attr';
+import ComponentEvent from './event';
 const Setting: React.FC = () => {
-  const [form] = Form.useForm();
-  const { curComponentId, curComponent, updateComponentProps } =
-    useComponents();
-
-  useEffect(() => {
-    if (!curComponentId || !curComponent) return;
-    // Get the current values of the form fields
-    const data = form.getFieldsValue(true);
-
-    // Initialize a new object with null values for each key in `data`
-    const newData = Object.keys(data).reduce((prev: any, key) => {
-      prev[key] = null;
-      return prev;
-    }, {});
-
-    // Set initial values for the form fields
-    form.setFieldsValue({ ...newData, ...curComponent?.props });
-  }, [curComponent, form]);
-
-  // 监听表单值变化，更新组件属性
-  function valueChange(changeValues: any) {
-    if (curComponentId) {
-      updateComponentProps(curComponentId, changeValues);
-    }
-  }
-  function renderFormElement(setting: any) {
-    const { type, options } = setting || {};
-    if (type === 'select') {
-      return <Select options={options} />;
-    } else if (type === 'input') {
-      return <Input />;
-    }
-  }
-  if (!curComponentId || !curComponent) return null;
-
+  const { curComponentId, curComponent } = useComponents() || {};
+  const [key, setKey] = useState<SegmentedValue>('属性');
+  if (!curComponentId || !curComponent) return;
   return (
-    <div className="pt-[20px]">
-      <Form
-        form={form}
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 14 }}
-        initialValues={curComponent.props}
-        onValuesChange={valueChange}
-      >
-        {componentSettingMap[curComponent.name]?.map((setting) => (
-          <Form.Item
-            key={setting.name}
-            name={setting.name}
-            label={setting.label}
-          >
-            {renderFormElement(setting)}
-          </Form.Item>
-        ))}
-      </Form>
+    <div>
+      <Segmented
+        value={key}
+        block
+        onChange={setKey}
+        options={['属性', '事件']}
+      />
+      <div className="pt-[20px]">
+        {key === '属性' && <ComponentAttr />}
+        {key === '事件' && <ComponentEvent />}
+      </div>
     </div>
   );
 };
