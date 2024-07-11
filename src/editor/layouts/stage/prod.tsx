@@ -4,32 +4,44 @@ import { useComponents } from '@/editor/stores/components';
 import { IComponent } from '@/editor/utils/types';
 import { componentsEventMap } from '@/editor/utils/constants';
 import { message } from 'antd';
+
 const ProdPage = () => {
   const { components } = useComponents();
 
-  const handleEvent = (component: IComponent) => {
-    const props: Record<string, any> = {};
+  // 处理组件事件配置，增强组件属性
+  const enhanceComponentProps = (component: IComponent) => {
+    const enhancedProps: Record<string, any> = {};
+
+    // 检查是否有事件映射
     if (componentsEventMap.has(component.name)) {
+      // 遍历组件的事件配置
       componentsEventMap.get(component.name)?.forEach((event) => {
         const eventConfig = component.props[event.name];
         if (eventConfig) {
-          const { type, config } = eventConfig || {};
-          props[event.name] = () => {
-            if (type === 'showMessage') {
+          const { type, config } = eventConfig;
+          // 如果事件类型是 'showMessage' 并且配置存在，则设置增强的属性
+          if (type === 'showMessage' && config) {
+            enhancedProps[event.name] = () => {
               message[config.type](config.text);
-            }
-          };
+            };
+          }
         }
       });
     }
-    return { ...component, props: { ...component?.props, ...props } };
+
+    // 返回增强后的组件对象，保持原有属性不变，只增加新属性
+    return { ...component, props: { ...component.props, ...enhancedProps } };
   };
-  const handelComponentsFn = (components: IComponent[]) => {
-    return components.map((component) => handleEvent(component));
+
+  // 对所有组件进行属性增强处理
+  const enhanceComponents = (components: IComponent[]) => {
+    return components.map(enhanceComponentProps);
   };
+
+  // 渲染预览页面，传入增强后的组件列表和处理函数
   return (
     <div className="p-[24px]">
-      {renderComponents(components, handelComponentsFn)}
+      {renderComponents(components, enhanceComponents)}
     </div>
   );
 };
