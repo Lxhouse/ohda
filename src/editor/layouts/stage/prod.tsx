@@ -1,49 +1,57 @@
 /** 预览页面 */
-import { renderComponents } from '@/editor/utils';
+import React, { useRef } from 'react';
+
 import { useComponents } from '@/editor/stores/components';
 import { IComponent } from '@/editor/utils/types';
+import { ComponentMap } from '@/editor/components/componentsConfig';
 import { componentsEventMap } from '@/editor/utils/constants';
 import { message } from 'antd';
+import { getComponentRef, getAllRef } from '@/editor/stores/component-ref';
 
 const ProdPage = () => {
   const { components } = useComponents();
-
-  // 处理组件事件配置，增强组件属性
-  const enhanceComponentProps = (component: IComponent) => {
-    const enhancedProps: Record<string, any> = {};
-
-    // 检查是否有事件映射
+  const componentRefs = useRef<any>({});
+  const handelEvent = (component: IComponent) => {
+    const props: any = {};
     if (componentsEventMap.has(component.name)) {
-      // 遍历组件的事件配置
-      componentsEventMap.get(component.name)?.forEach((event) => {
+      for (const event of componentsEventMap.get(component.name)!) {
         const eventConfig = component.props[event.name];
-        if (eventConfig) {
-          const { type, config } = eventConfig;
-          // 如果事件类型是 'showMessage' 并且配置存在，则设置增强的属性
-          if (type === 'showMessage' && config) {
-            enhancedProps[event.name] = () => {
-              message[config.type](config.text);
-            };
+        if (!eventConfig) return;
+        const { type, config } = eventConfig;
+        props[event.name] = () => {
+          if (type === 'showMessage') {
+            message[config.type](config.text);
+          } else if (type === 'componentFunction') {
+            const component = componentRefs.current[config.componentId];
+            if (component) {
+              component[config.method]?.();
+            }
           }
-        }
-      });
+        };
+      }
+      return props;
     }
-
-    // 返回增强后的组件对象，保持原有属性不变，只增加新属性
-    return { ...component, props: { ...component.props, ...enhancedProps } };
   };
-
-  // 对所有组件进行属性增强处理
-  const enhanceComponents = (components: IComponent[]) => {
-    return components.map(enhanceComponentProps);
+  const renderComponents = (components: IComponent[]): React.ReactNode => {
+    return components.map((component) => {
+      if (!ComponentMap[component.name]) return null;
+      const props = handelEvent(component);
+      if (!ComponentMap[component.name]) return;
+      return React.createElement(
+        ComponentMap[component.name],
+        {
+          key: component.id,
+          id: component.id,
+          ref: (ref) => {
+            componentRefs.current[component.id] = ref;
+          },
+          ...props,
+        },
+        component.props.children || renderComponents(component.children || [])
+      );
+    });
   };
-
-  // 渲染预览页面，传入增强后的组件列表和处理函数
-  return (
-    <div className="p-[24px]">
-      {renderComponents(components, enhanceComponents)}
-    </div>
-  );
+  return <div className="p-[24px]">{renderComponents(components)}</div>;
 };
 
 export default ProdPage;

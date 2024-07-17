@@ -1,6 +1,7 @@
 import React from 'react';
 import { IComponent } from '@/editor/utils/types';
 import { ComponentMap } from '@/editor/components/componentsConfig';
+import { setComponentRef } from '../stores/component-ref';
 /**
  * 根据 id 递归查找组件
  *
@@ -68,15 +69,29 @@ export const renderComponents = (
   return _components.map((component) => {
     const ComponentType = ComponentMap[component.name];
     if (!ComponentType) return;
-    return React.createElement(
-      ComponentType,
-      {
-        key: component.id,
-        id: component.id,
-        ...component.props,
-        'data-component-id': component.id,
-      },
-      component.props.children || renderComponents(component.children || [])
-    );
+    return handelFn
+      ? React.createElement(
+          ComponentType,
+          {
+            key: component.id,
+            id: component.id,
+            ...component.props,
+            ref: (ref) => {
+              setComponentRef(component.id, ref);
+            },
+            'data-component-id': component.id,
+          },
+          component.props.children || renderComponents(component.children || [])
+        )
+      : React.createElement(
+          ComponentType,
+          {
+            key: component.id,
+            id: component.id,
+            ...component.props,
+            'data-component-id': component.id,
+          },
+          component.props.children || renderComponents(component.children || [])
+        );
   });
 };

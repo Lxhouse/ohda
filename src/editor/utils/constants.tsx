@@ -13,3 +13,21 @@ export const componentsEventMap = new Map<
     ],
   ],
 ]);
+export const componentsMethodsMap = new Map<
+  string,
+  { name: string; label: string }[]
+>([
+  [
+    ItemType.Button,
+    [
+      {
+        name: 'startLoading',
+        label: '开始 loading',
+      },
+      {
+        name: 'endLoading',
+        label: '结束 loading',
+      },
+    ],
+  ],
+]);

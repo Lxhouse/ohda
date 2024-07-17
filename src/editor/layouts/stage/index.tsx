@@ -17,7 +17,6 @@ const Stage: React.FC = () => {
         if (ele.getAttribute) {
           if (ele.getAttribute('data-component-id')) {
             const componentId = ele.getAttribute('data-component-id');
-
             setCurComponentId(componentId);
           }
         }
