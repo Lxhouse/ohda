@@ -61,37 +61,19 @@ export function getComponentByIdDP(
 }
 
 /** 渲染组件 */
-export const renderComponents = (
-  components: IComponent[],
-  handelFn?: (components: IComponent[]) => IComponent[]
-): React.ReactNode => {
-  const _components = handelFn ? handelFn(components) : components;
-  return _components.map((component) => {
+export const renderComponents = (components: IComponent[]): React.ReactNode => {
+  return components.map((component) => {
     const ComponentType = ComponentMap[component.name];
     if (!ComponentType) return;
-    return handelFn
-      ? React.createElement(
-          ComponentType,
-          {
-            key: component.id,
-            id: component.id,
-            ...component.props,
-            ref: (ref) => {
-              setComponentRef(component.id, ref);
-            },
-            'data-component-id': component.id,
-          },
-          component.props.children || renderComponents(component.children || [])
-        )
-      : React.createElement(
-          ComponentType,
-          {
-            key: component.id,
-            id: component.id,
-            ...component.props,
-            'data-component-id': component.id,
-          },
-          component.props.children || renderComponents(component.children || [])
-        );
+    return React.createElement(
+      ComponentType,
+      {
+        key: component.id,
+        id: component.id,
+        ...component.props,
+        'data-component-id': component.id,
+      },
+      component.props.children || renderComponents(component.children || [])
+    );
   });
 };
