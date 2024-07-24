@@ -1,4 +1,4 @@
-import useEditStore from '@/store/editStore';
+import { addCmp } from '@/store/editStore';
 import { Style } from '@/store/editStoreTypes';
 import { memo } from 'react';
 
@@ -20,10 +20,6 @@ const staticTextSelectBox: ITextSelectBox[] = [
   },
 ];
 const SliderBox = memo((props: ISliderProps) => {
-  const { addCmp } = useEditStore(
-    (state) => state,
-    () => true
-  );
   const { selectIndex } = props || {};
   return (
     <div className="absolute w-[300px] h-full left-[50px]  shadow-xl p-1">

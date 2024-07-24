@@ -9,14 +9,14 @@ import {
 const useEditStore = create(
   immer<EditStoreAction & EditStoreState>((set) => ({
     canvas: getDefaultCanvas(),
-    addCmp: (_cmps: ICmp) => {
-      set((draft) => {
-        draft.canvas.cmps.push({ ..._cmps, key: new Date().getTime() });
-      });
-    },
   }))
 );
 
+export const addCmp = (_cmps: ICmp) => {
+  useEditStore.setState((draft) => {
+    draft.canvas.cmps.push({ ..._cmps, key: new Date().getTime() });
+  });
+};
 function getDefaultCanvas(): ICanvas {
   return {
     title: '未命名',

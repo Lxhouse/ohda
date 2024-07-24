@@ -1,7 +1,8 @@
 import { useCallback } from 'react';
-import useEditStore from '@/store/editStore';
+import Cmp from './Cmp';
+import useEditStore, { addCmp } from '@/store/editStore';
 function Canvas() {
-  const { canvas, addCmp } = useEditStore();
+  const canvas = useEditStore((state) => state.canvas);
   const onDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     /** 获取拖拽的组件信息 */
@@ -32,10 +33,8 @@ function Canvas() {
       onDrop={onDrop}
       onDragOver={onDragOver}
     >
-      {canvas.cmps.map((cmp) => (
-        <div key={cmp.key} className="absolute" style={cmp.style}>
-          {cmp.value}
-        </div>
+      {canvas.cmps.map((cmp, i) => (
+        <Cmp key={cmp.key} cmp={cmp} index={i} />
       ))}
     </div>
   );
