@@ -25,17 +25,24 @@ const SliderBox = memo((props: ISliderProps) => {
     () => true
   );
   const { selectIndex } = props || {};
-  console.log('render SliderBox');
   return (
     <div className="absolute w-[300px] h-full left-[50px]  shadow-xl p-1">
       {selectIndex === 1 && (
         <div className="flex gap-5">
           {staticTextSelectBox.map((selectBoxItem) => (
             <div
+              draggable
               key={selectBoxItem.value}
               className="flex items-center justify-center w-1/2  cursor-pointer h-[60px] border border-sky-500 hover:border-yellow-500"
               style={selectBoxItem.style}
               onClick={() => addCmp({ ...selectBoxItem, type: 1 })}
+              onDragStart={(event) => {
+                event.dataTransfer.effectAllowed = 'move';
+                event.dataTransfer.setData(
+                  'drag-cmp',
+                  JSON.stringify({ ...selectBoxItem, type: 1 })
+                );
+              }}
             >
               {selectBoxItem.value || ''}
             </div>

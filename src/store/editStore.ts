@@ -21,8 +21,8 @@ function getDefaultCanvas(): ICanvas {
   return {
     title: '未命名',
     style: {
-      width: 620,
-      height: 868,
+      width: 420,
+      height: 668,
       backgroundColor: '#fff',
       backgroundImage: '',
       backgroundPosition: 'center',

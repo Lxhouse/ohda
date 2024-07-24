@@ -1,10 +1,39 @@
+import { useCallback } from 'react';
 import useEditStore from '@/store/editStore';
 function Canvas() {
-  const { canvas } = useEditStore();
+  const { canvas, addCmp } = useEditStore();
+  const onDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    /** 获取拖拽的组件信息 */
+    const dragInfo = e.dataTransfer.getData('drag-cmp');
+    if (!dragInfo) return;
+    const dragCmp = JSON.parse(dragInfo || '{}');
+    /** 获取它放在画布上的位置，计算相对于画布的位置 */
+    const endX = e.pageX;
+    const endY = e.pageY;
+    const canvas = document.querySelector('#canvas');
+    const { top = 0, left = 0 } = canvas?.getBoundingClientRect() || {};
+    const disX = endX - left;
+    const disY = endY - top;
+    dragCmp.style.left = disX;
+    dragCmp.style.top = disY;
+    /** 值传给store */
+    addCmp(dragCmp);
+  }, []);
+  const onDragOver = useCallback((event: React.DragEvent) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+  }, []);
   return (
-    <div id="canvas" className="h-full overflow-auto" style={canvas.style}>
+    <div
+      id="canvas"
+      className="relative h-full overflow-auto "
+      style={canvas.style}
+      onDrop={onDrop}
+      onDragOver={onDragOver}
+    >
       {canvas.cmps.map((cmp) => (
-        <div key={cmp.key} style={cmp.style}>
+        <div key={cmp.key} className="absolute" style={cmp.style}>
           {cmp.value}
         </div>
       ))}
