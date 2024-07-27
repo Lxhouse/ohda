@@ -6,6 +6,7 @@ import {
   ICanvas,
   ICmp,
 } from './editStoreTypes';
+
 const useEditStore = create(
   immer<EditStoreAction & EditStoreState>((set) => ({
     canvas: getDefaultCanvas(),
@@ -14,6 +15,7 @@ const useEditStore = create(
 
 export const addCmp = (_cmps: ICmp) => {
   useEditStore.setState((draft) => {
+    console.log(123321, { draft });
     draft.canvas.cmps.push({ ..._cmps, key: new Date().getTime() });
   });
 };

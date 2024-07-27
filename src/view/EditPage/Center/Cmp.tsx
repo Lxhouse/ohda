@@ -10,9 +10,18 @@ function Cmp(props: IComProps) {
   const { key, cmp, index } = props;
   const { style } = cmp;
 
+  const getDomByType = (cmpItem: ICmpWithKey) => {
+    const { type, value } = cmpItem || {};
+    if (type === 1) {
+      return value;
+    } else if (type === 2) {
+      return <img {...cmpItem} />;
+    }
+    return;
+  };
   return (
     <div key={key} className={`absolute z-${index}`} style={style}>
-      {cmp.value}
+      {getDomByType(cmp)}
     </div>
   );
 }
