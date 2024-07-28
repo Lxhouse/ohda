@@ -1,6 +1,10 @@
 import { useCallback } from 'react';
+import { throttle } from 'lodash';
 import Cmp from './Cmp';
-import useEditStore, { addCmp } from '@/store/editStore';
+import useEditStore, {
+  addCmp,
+  updateCanvasByAssembly,
+} from '@/store/editStore';
 function Canvas() {
   const canvas = useEditStore((state) => state.canvas);
   const onDrop = useCallback((e: React.DragEvent) => {
@@ -25,6 +29,23 @@ function Canvas() {
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
   }, []);
+  const handelMove = (e: React.MouseEvent) => {
+    let startX = e.pageX;
+    let startY = e.pageY;
+    const move = throttle((e1: React.MouseEvent) => {
+      const disX = e1.pageX - startX;
+      const disY = e1.pageY - startY;
+      updateCanvasByAssembly({ top: disY, left: disX });
+      startX = e1.pageX;
+      startY = e1.pageY;
+    });
+    const up = () => {
+      document.removeEventListener('mousemove', move);
+      document.removeEventListener('mouseup', up);
+    };
+    document.addEventListener('mousemove', move);
+    document.addEventListener('mouseup', up);
+  };
   return (
     <div
       id="canvas"
@@ -32,9 +53,10 @@ function Canvas() {
       style={canvas.style}
       onDrop={onDrop}
       onDragOver={onDragOver}
+      onMouseDown={handelMove}
     >
       {canvas.cmps.map((cmp, i) => (
-        <Cmp key={cmp.key} cmp={cmp} index={i} />
+        <Cmp cmp={cmp} index={i} />
       ))}
     </div>
   );
